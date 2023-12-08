@@ -1,25 +1,31 @@
-import { Controller, Get, Post, Patch, Delete, Param, HttpCode, Body} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  HttpCode,
+  Body,
+} from '@nestjs/common';
 import { AppService } from '../service/app.service';
 import { Account, Prisma } from '@prisma/client';
 
 export interface DefaultUrlParam {
-  id: string
+  id: string;
 }
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-
   @Post('/account')
-  createAccount(): Promise<Account | null>{
+  createAccount(): Promise<Account | null> {
     return this.appService.createAccount();
   }
 
   @Get('/account/:id')
-  async getAccount(
-    @Param() params: DefaultUrlParam,
-  ): Promise<Account | null> {
+  async getAccount(@Param() params: DefaultUrlParam): Promise<Account | null> {
     return this.appService.getAccount(params);
   }
 
@@ -35,10 +41,7 @@ export class AppController {
 
   @Delete('/account/:id')
   @HttpCode(204)
-  deleteAccount(
-    @Param() params: DefaultUrlParam,
-  ) {
+  deleteAccount(@Param() params: DefaultUrlParam) {
     return this.appService.deleteAccount(params);
   }
-
 }
