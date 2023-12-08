@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountType {
+  Checking
+  Savings
+}
+
+model Account {
+  id        Int       @id @default(autoincrement())
+  number    Int       @unique
+  branch    Int
+  type      AccountType
+  balance   Int // balance in cents: balance * 100
+
+  // Define a relationship to transactions where this account is the sender
+  sentTransactions Transaction[] @relation("sentTransactions")
+
+  // Define a relationship to transactions where this account is the receiver
+  receivedTransactions Transaction[] @relation("receivedTransactions")
+
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+}
+
+model Transaction {
+  id        Int       @id @default(autoincrement())
+  amount    Int // amount in cents: amount * 100
+
+  // Relationship to the sender account
+  from      Account  @relation("sentTransactions", fields: [fromId], references: [id])
+  fromId    Int
+
+  // Relationship to the receiver account
+  to        Account  @relation("receivedTransactions", fields: [toId], references: [id])
+  toId      Int
+
+  createdAt DateTime @default(now())
+}
+
+//Contas Bancárias
+//Implemente operações CRUD para uma entidade "Conta Bancária".
+//Cada conta deve ter um número da conta (único), agência, tipo (corrente, poupança) e saldo.
+
+//Depósito e Saque
+//Implemente funcionalidades para depósito e saque em uma conta.
+//As transações devem atualizar o saldo da conta e serem registradas.
+
+
