@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from '../service/app.service';
+import { AccountController } from './account.controller';
+import { AccountService } from '../service/account.service';
 import { PrismaService } from '../service/prisma.service';
 
-describe('AppController', () => {
-  let appController: AppController;
+describe('AccountController', () => {
+  let appController: AccountController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService, PrismaService],
+      controllers: [AccountController],
+      providers: [AccountService, PrismaService],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    appController = app.get<AccountController>(AccountController);
   });
 
   describe('root', () => {
