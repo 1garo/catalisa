@@ -17,7 +17,7 @@ enum AccountType {
 
 model Account {
   id        Int       @id @default(autoincrement())
-  number    Int       @unique
+  number    Int @unique
   branch    Int
   type      AccountType
   balance   Int // balance in cents: balance * 100
@@ -30,6 +30,7 @@ model Account {
 
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
+  deleteAt DateTime?
 }
 
 model Transaction {
