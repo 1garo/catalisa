@@ -7,7 +7,7 @@ import { Account, AccountType } from '@prisma/client';
 
 describe('Account integration tests', () => {
   let app: INestApplication;
-  const prisma = new PrismaService()
+  const prisma = new PrismaService();
 
   let account: Account;
   let accountToPatch: Account;
@@ -18,55 +18,50 @@ describe('Account integration tests', () => {
       data: {
         number: 100000001,
         branch: 1001,
-        type: "Savings",
+        type: 'Savings',
         balance: 0,
-      }
-    })
+      },
+    });
 
     accountToPatch = await prisma.account.create({
       data: {
         number: 100000002,
         branch: 1001,
-        type: "Savings",
+        type: 'Savings',
         balance: 0,
-      }
-    })
+      },
+    });
 
     accountToDelete = await prisma.account.create({
       data: {
         number: 100000003,
         branch: 1001,
-        type: "Savings",
+        type: 'Savings',
         balance: 0,
-      }
-    })
+      },
+    });
 
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
-      providers: [PrismaService]
-    })
-      .compile();
+      providers: [PrismaService],
+    }).compile();
 
     app = moduleRef.createNestApplication();
     await app.init();
   });
 
   afterAll(async () => {
-    const deleteAccount = prisma.account.deleteMany()
+    const deleteAccount = prisma.account.deleteMany();
 
-    await prisma.$transaction([
-      deleteAccount,
-    ])
+    await prisma.$transaction([deleteAccount]);
 
-    await prisma.$disconnect()
-  })
+    await prisma.$disconnect();
+  });
 
   it(`should succeed to create an account`, async () => {
-    let response = await request(app.getHttpServer())
-      .post('/account')
-      .send({
-        "type": "Savings"
-      })
+    let response = await request(app.getHttpServer()).post('/account').send({
+      type: 'Savings',
+    });
 
     expect(response.status).toEqual(201);
     expect(response.body.data).not.toBeUndefined();
@@ -74,11 +69,9 @@ describe('Account integration tests', () => {
     expect(response.body.data.branch).toEqual(account.branch);
     expect(response.body.data.deletedAt).toBeNull();
 
-    response = await request(app.getHttpServer())
-      .post('/account')
-      .send({
-        "type": "Checking"
-      })
+    response = await request(app.getHttpServer()).post('/account').send({
+      type: 'Checking',
+    });
 
     expect(response.status).toEqual(201);
     expect(response.body.data).not.toBeUndefined();
@@ -90,43 +83,43 @@ describe('Account integration tests', () => {
   it(`should succeed to patch an account`, async () => {
     expect(accountToPatch.type).toEqual(AccountType.Savings);
 
-    const response = await request(app.getHttpServer())
-      .patch('/account')
-      .send({
-        "type": "Checking",
-        "id": accountToPatch.id
-      })
+    const response = await request(app.getHttpServer()).patch('/account').send({
+      type: 'Checking',
+      id: accountToPatch.id,
+    });
 
     expect(response.status).toEqual(204);
 
     const acc = await prisma.account.findFirst({
       where: {
-        id: accountToPatch.id
-      }
-    })
+        id: accountToPatch.id,
+      },
+    });
 
     expect(acc.type).toEqual(AccountType.Checking);
     expect(acc.updatedAt).not.toEqual(accountToPatch.updatedAt);
   });
 
   it(`should succeed to delete an account`, async () => {
-    const response = await request(app.getHttpServer())
-      .delete(`/account/${accountToDelete.id}`)
+    const response = await request(app.getHttpServer()).delete(
+      `/account/${accountToDelete.id}`,
+    );
 
     expect(response.status).toEqual(204);
 
     const acc = await prisma.account.findFirst({
       where: {
-        id: accountToDelete.id
-      }
-    })
+        id: accountToDelete.id,
+      },
+    });
 
     expect(acc.deletedAt).not.toBeNull();
-  })
+  });
 
   it(`should succeed to get account with :id`, async () => {
-    const response = await request(app.getHttpServer())
-      .get(`/account/${account.id}`)
+    const response = await request(app.getHttpServer()).get(
+      `/account/${account.id}`,
+    );
 
     expect(response.status).toEqual(200);
     expect(response.body.data.id).toEqual(account.id);
@@ -136,8 +129,7 @@ describe('Account integration tests', () => {
   });
 
   it(`should succeed to get all accounts`, async () => {
-    const response = await request(app.getHttpServer())
-      .get('/account')
+    const response = await request(app.getHttpServer()).get('/account');
 
     expect(response.status).toEqual(200);
     expect(response.body.count).not.toBeNull();
@@ -145,11 +137,10 @@ describe('Account integration tests', () => {
   });
 
   it(`should error because :id is not found`, async () => {
-    const response = await request(app.getHttpServer())
-      .get(`/account/-1`)
+    const response = await request(app.getHttpServer()).get(`/account/-1`);
 
     expect(response.status).toEqual(404);
-    expect(response.body.message).toEqual("Account not found");
+    expect(response.body.message).toEqual('Account not found');
   });
 
   afterAll(async () => {

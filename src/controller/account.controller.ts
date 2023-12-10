@@ -13,7 +13,12 @@ import {
 import { AccountService } from '../service/account.service';
 import { Account } from '@prisma/client';
 import { ZodValidationPipe } from '../validators';
-import { CreateAccountDto, UpdateAccountDto, createAccount, updateAccount } from '../validators/account';
+import {
+  CreateAccountDto,
+  UpdateAccountDto,
+  createAccount,
+  updateAccount,
+} from '../validators/account';
 
 export interface DefaultUrlParam {
   id: string;
@@ -31,28 +36,30 @@ export class AccountController {
   @Post('/account')
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createAccount))
-  createAccount(@Body() body: CreateAccountDto): Promise<{data: Account}> {
+  createAccount(@Body() body: CreateAccountDto): Promise<{ data: Account }> {
     return this.appService.createAccount(body);
   }
 
   @Get('/account/:id')
   @HttpCode(200)
-  async getAccount(@Param() params: DefaultUrlParam): Promise<{data: Account}> {
+  async getAccount(
+    @Param() params: DefaultUrlParam,
+  ): Promise<{ data: Account }> {
     return this.appService.getAccount(params);
   }
 
   @Get('/account')
   @HttpCode(200)
-  async getAll(@Query() query: Pagination): Promise<{data: Account[], count: number}>{
+  async getAll(
+    @Query() query: Pagination,
+  ): Promise<{ data: Account[]; count: number }> {
     return this.appService.getAllAccounts(query);
   }
 
   @Patch('/account')
   @HttpCode(204)
   @UsePipes(new ZodValidationPipe(updateAccount))
-  updateAccount(
-    @Body() body: UpdateAccountDto
-  ) {
+  updateAccount(@Body() body: UpdateAccountDto) {
     return this.appService.updateAccount(body);
   }
 
