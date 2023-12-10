@@ -78,7 +78,7 @@ export class AccountService {
         id: nid,
       },
       data: {
-        deleteAt: new Date()
+        deletedAt: new Date()
       },
 
     })
