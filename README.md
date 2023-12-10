@@ -28,7 +28,7 @@ $ npm run test
 
 ## OBS
 
-- I decided that account deleting would hard delete (remove the account from the database), and not just soft delete using a table field;
+- I decided that account deleting would use soft delete by filling the field `deletedAt` with the timestamp of the deletion;
 - Because was my first time using NestJs I tried to follow the patterns introduced by the official documentation, for example:
     - I did not create a `Repository` in this case (as I generally would prefer to), because most of the examples that I saw was doing db calls directly from the `Service`
     - I used zod to validate the inputs with the `Pipe()` function, and when the input is not right it errors with:
