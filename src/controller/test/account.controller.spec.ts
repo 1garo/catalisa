@@ -1,9 +1,10 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { AppModule } from '../module/app.module';
-import { PrismaService } from '../service/prisma.service';
+import { AppModule } from '../../module/app.module';
+import { PrismaService } from '../../service/prisma.service';
 import { Account, AccountType } from '@prisma/client';
+import { seedAccount } from './seed';
 
 describe('Account integration tests', () => {
   let app: INestApplication;
@@ -14,32 +15,10 @@ describe('Account integration tests', () => {
   let accountToDelete: Account;
 
   beforeAll(async () => {
-    account = await prisma.account.create({
-      data: {
-        number: 100000001,
-        branch: 1001,
-        type: 'Savings',
-        balance: 0,
-      },
-    });
-
-    accountToPatch = await prisma.account.create({
-      data: {
-        number: 100000002,
-        branch: 1001,
-        type: 'Savings',
-        balance: 0,
-      },
-    });
-
-    accountToDelete = await prisma.account.create({
-      data: {
-        number: 100000003,
-        branch: 1001,
-        type: 'Savings',
-        balance: 0,
-      },
-    });
+    const seed = await seedAccount(prisma);
+    account = seed.account;
+    accountToDelete = seed.accountToDelete;
+    accountToPatch = seed.accountToPatch;
 
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
