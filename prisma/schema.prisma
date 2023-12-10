@@ -29,8 +29,8 @@ model Account {
   receivedTransactions Transaction[] @relation("receivedTransactions")
 
   createdAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-  deleteAt DateTime?
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 }
 
 model Transaction {
