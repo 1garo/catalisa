@@ -1,0 +1,17 @@
+meta {
+  name: get all transactions
+  type: http
+  seq: 8
+}
+
+get {
+  url: http://localhost:3000/transaction?accountId=1&take=1&skip=0
+  body: none
+  auth: none
+}
+
+query {
+  accountId: 1
+  take: 1
+  skip: 0
+}
