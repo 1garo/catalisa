@@ -40,7 +40,7 @@ model Transaction {
   type TransactionType
 
   // Relationship to the sender account
-  account Account  @relation(fields: [accountId], references: [id])
+  account Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId Int
 
   createdAt DateTime @default(now())
