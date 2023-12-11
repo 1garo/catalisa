@@ -14,6 +14,8 @@ $ npm run prisma:migrate
 $ npm run start:dev
 ```
 
+I use [bruno](https://github.com/usebruno/bruno) instead of Postman, you can install Bruno and them import the collection `/reqs`
+
 ## Test
 
 ```bash
