@@ -39,7 +39,7 @@ $ npm run test
 
 - I took the freedom to do some consideration about the schema validation:
     - Just the `type` field can be updated;
-- Regarding `GET /account` pagination:
+- Regarding API pagination:
     - `take` default is 20;
     - `skip` default is 0;
 
