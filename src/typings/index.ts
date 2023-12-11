@@ -7,5 +7,4 @@ export interface Pagination {
   skip: string;
 }
 
-export type TransactionPagination = Pagination & {accountId: string}
-
+export type TransactionPagination = Pagination & { accountId: string };

@@ -34,8 +34,11 @@ export class AccountController {
     try {
       return this.appService.createAccount(body);
     } catch (err) {
-      console.error(err)
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -55,8 +58,11 @@ export class AccountController {
     try {
       return this.appService.getAllAccounts(query);
     } catch (err) {
-      console.error(err)
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -67,8 +73,11 @@ export class AccountController {
     try {
       return this.appService.updateAccount(body);
     } catch (err) {
-      console.error(err)
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -78,8 +87,11 @@ export class AccountController {
     try {
       return this.appService.deleteAccount(params);
     } catch (err) {
-      console.error(err)
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

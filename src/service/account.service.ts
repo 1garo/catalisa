@@ -29,7 +29,7 @@ export class AccountService {
   }
 
   async getAccount({ id }: DefaultUrlParam): Promise<{ data: Account }> {
-    const account = await findAccount(this.prisma, id)
+    const account = await findAccount(this.prisma, id);
 
     if (account === null) {
       throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
@@ -41,22 +41,21 @@ export class AccountService {
   }
 
   async createAccount({ type }: CreateAccountDto): Promise<{ data: Account }> {
-      const accountsQuantity = await this.prisma.account.count();
-      const number = DEFAULT_NUMBER + (accountsQuantity + 1);
+    const accountsQuantity = await this.prisma.account.count();
+    const number = DEFAULT_NUMBER + (accountsQuantity + 1);
 
-      const account = await this.prisma.account.create({
-        data: {
-          number,
-          type,
-          branch: DEFAULT_BRANCH,
-          balance: DEFAULT_BALANCE,
-        },
-      });
+    const account = await this.prisma.account.create({
+      data: {
+        number,
+        type,
+        branch: DEFAULT_BRANCH,
+        balance: DEFAULT_BALANCE,
+      },
+    });
 
-      return {
-        data: account,
-      };
-
+    return {
+      data: account,
+    };
   }
 
   async deleteAccount({ id }: DefaultUrlParam) {
@@ -79,23 +78,23 @@ export class AccountService {
   }
 
   async updateAccount({ id, type }: UpdateAccountDto) {
-      const account = await this.prisma.account.findUnique({
-        where: {
-          id,
-        },
-      });
+    const account = await this.prisma.account.findUnique({
+      where: {
+        id,
+      },
+    });
 
-      if (account === null) {
-        throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
-      }
+    if (account === null) {
+      throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
+    }
 
-      await this.prisma.account.update({
-        where: {
-          id,
-        },
-        data: {
-          type,
-        },
-      });
+    await this.prisma.account.update({
+      where: {
+        id,
+      },
+      data: {
+        type,
+      },
+    });
   }
 }

@@ -12,7 +12,10 @@ import {
 } from '@nestjs/common';
 import { TransactionService } from '../service/transaction.service';
 import { ZodValidationPipe } from '../validators';
-import { TransactionDto, transactionValidation } from '../validators/transaction';
+import {
+  TransactionDto,
+  transactionValidation,
+} from '../validators/transaction';
 import { DefaultUrlParam, TransactionPagination } from '../typings';
 
 @Controller()
@@ -26,34 +29,42 @@ export class TransactionController {
     try {
       return this.appService.createTransaction(body);
     } catch (err) {
-      console.error(err)
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   @Get('/transaction/:id')
   @HttpCode(200)
-  getTransaction(@Param() params: DefaultUrlParam, @Query() query: {accountId: string}) {
+  getTransaction(
+    @Param() params: DefaultUrlParam,
+    @Query() query: { accountId: string },
+  ) {
     try {
       return this.appService.getTransaction(params, query);
     } catch (err) {
-      console.error(err)
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   @Get('/transaction')
   @HttpCode(200)
-  async getAll(
-    @Query() query: TransactionPagination,
-  ) {
+  async getAll(@Query() query: TransactionPagination) {
     try {
       return this.appService.getAllTransaction(query);
     } catch (err) {
-      console.error(err)
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
-
-
 }

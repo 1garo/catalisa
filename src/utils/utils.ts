@@ -1,36 +1,42 @@
-import { Account } from "@prisma/client";
-import { PrismaService } from "../service/prisma.service";
+import { Account } from '@prisma/client';
+import { PrismaService } from '../service/prisma.service';
 
-export const findAccount = async (prisma: PrismaService, id: string): Promise<Account | null> => {
-    const account = await prisma.account.findUnique({
-      where: {
-        id: Number(id),
-        deletedAt: null,
-      },
-    });
+export const findAccount = async (
+  prisma: PrismaService,
+  id: string,
+): Promise<Account | null> => {
+  const account = await prisma.account.findUnique({
+    where: {
+      id: Number(id),
+      deletedAt: null,
+    },
+  });
 
-    if (account === null) {
-      return null
-    }
+  if (account === null) {
+    return null;
+  }
 
-    return account
-}
+  return account;
+};
 
-export const findAccountByNumber = async (prisma: PrismaService, number: number): Promise<Account | null> => {
+export const findAccountByNumber = async (
+  prisma: PrismaService,
+  number: number,
+): Promise<Account | null> => {
   if (number === null) {
-    return null
+    return null;
   }
 
   const account = await prisma.account.findUnique({
     where: {
       number,
-      deletedAt: null
+      deletedAt: null,
     },
   });
 
   if (account === null) {
-    return null
+    return null;
   }
 
-  return account
-}
+  return account;
+};
