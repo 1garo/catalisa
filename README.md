@@ -4,6 +4,7 @@
 ```bash
 $ docker compose up -d
 $ npm install
+$ npm run prisma:migrate
 ```
 
 ## Running the app
