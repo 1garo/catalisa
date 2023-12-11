@@ -35,6 +35,7 @@ describe('Account integration tests', () => {
     await prisma.$transaction([deleteAccount]);
 
     await prisma.$disconnect();
+    await app.close();
   });
 
   it(`should succeed to create an account`, async () => {
@@ -108,11 +109,15 @@ describe('Account integration tests', () => {
   });
 
   it(`should succeed to get all accounts`, async () => {
-    const response = await request(app.getHttpServer()).get('/account');
+    const response = await request(app.getHttpServer())
+    .get('/account')
+    .query({take: 1})
+
 
     expect(response.status).toEqual(200);
     expect(response.body.count).not.toBeNull();
     expect(response.body.data).not.toBeNull();
+    expect(response.body.data.length).toBe(1);
   });
 
   it(`should error because :id is not found`, async () => {
@@ -120,9 +125,5 @@ describe('Account integration tests', () => {
 
     expect(response.status).toEqual(404);
     expect(response.body.message).toEqual('Account not found');
-  });
-
-  afterAll(async () => {
-    await app.close();
   });
 });

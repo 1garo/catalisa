@@ -1,0 +1,21 @@
+meta {
+  name: create transaction
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:3000/transaction
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "account": {
+      "number": 100000001
+    },
+    "amount": 21,
+    "type": "Withdraw"
+  }
+}

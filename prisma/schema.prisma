@@ -15,6 +15,11 @@ enum AccountType {
   Savings
 }
 
+enum TransactionType {
+  Withdraw
+  Deposit
+}
+
 model Account {
   id        Int       @id @default(autoincrement())
   number    Int @unique
@@ -22,11 +27,7 @@ model Account {
   type      AccountType
   balance   Int // balance in cents: balance * 100
 
-  // Define a relationship to transactions where this account is the sender
-  sentTransactions Transaction[] @relation("sentTransactions")
-
-  // Define a relationship to transactions where this account is the receiver
-  receivedTransactions Transaction[] @relation("receivedTransactions")
+  transactions Transaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -36,24 +37,12 @@ model Account {
 model Transaction {
   id        Int       @id @default(autoincrement())
   amount    Int // amount in cents: amount * 100
+  type TransactionType
 
   // Relationship to the sender account
-  from      Account  @relation("sentTransactions", fields: [fromId], references: [id])
-  fromId    Int
-
-  // Relationship to the receiver account
-  to        Account  @relation("receivedTransactions", fields: [toId], references: [id])
-  toId      Int
+  account Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId Int
 
   createdAt DateTime @default(now())
 }
-
-//Contas Bancárias
-//Implemente operações CRUD para uma entidade "Conta Bancária".
-//Cada conta deve ter um número da conta (único), agência, tipo (corrente, poupança) e saldo.
-
-//Depósito e Saque
-//Implemente funcionalidades para depósito e saque em uma conta.
-//As transações devem atualizar o saldo da conta e serem registradas.
-
 

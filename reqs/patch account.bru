@@ -1,0 +1,18 @@
+meta {
+  name: patch account
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:3000/account
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type": "Savings",
+    "id": 5
+  }
+}

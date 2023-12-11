@@ -9,6 +9,8 @@ import {
   Body,
   UsePipes,
   Query,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { AccountService } from '../service/account.service';
 import { Account } from '@prisma/client';
@@ -16,18 +18,10 @@ import { ZodValidationPipe } from '../validators';
 import {
   CreateAccountDto,
   UpdateAccountDto,
-  createAccount,
-  updateAccount,
+  createAccountValidation,
+  updateAccountValidation,
 } from '../validators/account';
-
-export interface DefaultUrlParam {
-  id: string;
-}
-
-export interface Pagination {
-  take: string;
-  skip: string;
-}
+import { DefaultUrlParam, Pagination } from '../typings';
 
 @Controller()
 export class AccountController {
@@ -35,9 +29,17 @@ export class AccountController {
 
   @Post('/account')
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createAccount))
+  @UsePipes(new ZodValidationPipe(createAccountValidation))
   createAccount(@Body() body: CreateAccountDto): Promise<{ data: Account }> {
-    return this.appService.createAccount(body);
+    try {
+      return this.appService.createAccount(body);
+    } catch (err) {
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Get('/account/:id')
@@ -53,19 +55,43 @@ export class AccountController {
   async getAll(
     @Query() query: Pagination,
   ): Promise<{ data: Account[]; count: number }> {
-    return this.appService.getAllAccounts(query);
+    try {
+      return this.appService.getAllAccounts(query);
+    } catch (err) {
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Patch('/account')
   @HttpCode(204)
-  @UsePipes(new ZodValidationPipe(updateAccount))
+  @UsePipes(new ZodValidationPipe(updateAccountValidation))
   updateAccount(@Body() body: UpdateAccountDto) {
-    return this.appService.updateAccount(body);
+    try {
+      return this.appService.updateAccount(body);
+    } catch (err) {
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Delete('/account/:id')
   @HttpCode(204)
   deleteAccount(@Param() params: DefaultUrlParam) {
-    return this.appService.deleteAccount(params);
+    try {
+      return this.appService.deleteAccount(params);
+    } catch (err) {
+      console.error(err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
