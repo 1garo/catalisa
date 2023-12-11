@@ -1,15 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Account } from '@prisma/client';
-import { DefaultUrlParam, Pagination } from 'src/controller/account.controller';
+import { DefaultUrlParam, Pagination } from '../typings';
 import { PrismaService } from './prisma.service';
-import { CreateAccountDto, UpdateAccountDto } from 'src/validators/account';
+import { CreateAccountDto, UpdateAccountDto } from '../validators/account';
+import { findAccount } from '../utils/utils';
+
+const DEFAULT_BRANCH = 1001;
+const DEFAULT_NUMBER = 100000000;
+const DEFAULT_BALANCE = 0;
 
 @Injectable()
 export class AccountService {
   constructor(private prisma: PrismaService) {}
 
   async getAllAccounts({ take, skip }: Pagination) {
-    const [accounts, count] = await this.prisma.$transaction([
+    const [accountsQuantity, count] = await this.prisma.$transaction([
       this.prisma.account.findMany({
         take: Number(take) || 20,
         skip: Number(skip) || 0,
@@ -18,17 +23,13 @@ export class AccountService {
     ]);
 
     return {
-      data: accounts,
+      data: accountsQuantity,
       count,
     };
   }
 
   async getAccount({ id }: DefaultUrlParam): Promise<{ data: Account }> {
-    const account = await this.prisma.account.findUnique({
-      where: {
-        id: Number(id),
-      },
-    });
+    const account = await findAccount(this.prisma, id)
 
     if (account === null) {
       throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
@@ -40,34 +41,28 @@ export class AccountService {
   }
 
   async createAccount({ type }: CreateAccountDto): Promise<{ data: Account }> {
-    const defaultBranch = 1001;
-    const defaultNumber = 100000000;
-    const defaultBalance = 0;
-    const accounts = await this.prisma.account.count();
-    const number = defaultNumber + (accounts + 1);
+      const accountsQuantity = await this.prisma.account.count();
+      const number = DEFAULT_NUMBER + (accountsQuantity + 1);
 
-    const account = await this.prisma.account.create({
-      data: {
-        number,
-        type,
-        branch: defaultBranch,
-        balance: defaultBalance,
-      },
-    });
+      const account = await this.prisma.account.create({
+        data: {
+          number,
+          type,
+          branch: DEFAULT_BRANCH,
+          balance: DEFAULT_BALANCE,
+        },
+      });
 
-    return {
-      data: account,
-    };
+      return {
+        data: account,
+      };
+
   }
 
   async deleteAccount({ id }: DefaultUrlParam) {
     const nid = Number(id);
 
-    const account = await this.prisma.account.findUnique({
-      where: {
-        id: nid,
-      },
-    });
+    const account = await findAccount(this.prisma, id);
 
     if (account === null) {
       throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
@@ -84,23 +79,23 @@ export class AccountService {
   }
 
   async updateAccount({ id, type }: UpdateAccountDto) {
-    const account = await this.prisma.account.findUnique({
-      where: {
-        id,
-      },
-    });
+      const account = await this.prisma.account.findUnique({
+        where: {
+          id,
+        },
+      });
 
-    if (account === null) {
-      throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
-    }
+      if (account === null) {
+        throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
+      }
 
-    await this.prisma.account.update({
-      where: {
-        id,
-      },
-      data: {
-        type,
-      },
-    });
+      await this.prisma.account.update({
+        where: {
+          id,
+        },
+        data: {
+          type,
+        },
+      });
   }
 }

@@ -1,18 +1,18 @@
 import { AccountType } from '@prisma/client';
 import { z } from 'zod';
 
-export const updateAccount = z
+export const updateAccountValidation = z
   .object({
     type: z.nativeEnum(AccountType),
     id: z.number(),
   })
   .required();
 
-export const createAccount = z
+export const createAccountValidation = z
   .object({
     type: z.nativeEnum(AccountType),
   })
   .required();
 
-export type UpdateAccountDto = z.infer<typeof updateAccount>;
-export type CreateAccountDto = z.infer<typeof createAccount>;
+export type UpdateAccountDto = z.infer<typeof updateAccountValidation>;
+export type CreateAccountDto = z.infer<typeof createAccountValidation>;
