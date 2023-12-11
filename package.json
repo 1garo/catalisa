@@ -13,6 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "prisma:migrate": "npx prisma migrate deploy",
     "test:seed": "npx prisma migrate deploy && jest -i",
     "test": "dotenv -e .env.test -- npm run test:seed",
     "test:watch": "jest --watch",
