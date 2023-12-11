@@ -110,9 +110,8 @@ describe('Account integration tests', () => {
 
   it(`should succeed to get all accounts`, async () => {
     const response = await request(app.getHttpServer())
-    .get('/account')
-    .query({take: 1})
-
+      .get('/account')
+      .query({ take: 1 });
 
     expect(response.status).toEqual(200);
     expect(response.body.count).not.toBeNull();

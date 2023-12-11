@@ -26,9 +26,9 @@ describe('Transaction integration tests', () => {
       data: {
         accountId: acc.id,
         amount: 10 * 100,
-        type: "Deposit"
-      }
-    })
+        type: 'Deposit',
+      },
+    });
 
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
@@ -43,10 +43,7 @@ describe('Transaction integration tests', () => {
     const deleteAccount = prisma.account.deleteMany();
     const deleteTransactions = prisma.transaction.deleteMany();
 
-    await prisma.$transaction([
-      deleteAccount,
-      deleteTransactions
-    ]);
+    await prisma.$transaction([deleteAccount, deleteTransactions]);
 
     await prisma.$disconnect();
     await app.close();
@@ -54,8 +51,8 @@ describe('Transaction integration tests', () => {
 
   it(`should succeed to get a transaction`, async () => {
     const response = await request(app.getHttpServer())
-    .get(`/transaction/${tx.id}`)
-    .query({accountId: acc.id})
+      .get(`/transaction/${tx.id}`)
+      .query({ accountId: acc.id });
 
     expect(response.status).toEqual(200);
     expect(response.body.data.id).toEqual(tx.id);
@@ -64,8 +61,8 @@ describe('Transaction integration tests', () => {
 
   it(`should succeed to get all transactions`, async () => {
     const response = await request(app.getHttpServer())
-    .get(`/transaction`)
-    .query({accountId: acc.id, take: 1})
+      .get(`/transaction`)
+      .query({ accountId: acc.id, take: 1 });
 
     expect(response.status).toEqual(200);
     expect(response.body.data).not.toBeNull();
@@ -75,14 +72,14 @@ describe('Transaction integration tests', () => {
 
   it(`should succeed to create a deposit transaction`, async () => {
     const response = await request(app.getHttpServer())
-    .post('/transaction')
-    .send({
-      "account": {
-        "number": acc.number
-      },
-      "amount": 10,
-      "type": "Deposit"
-    });
+      .post('/transaction')
+      .send({
+        account: {
+          number: acc.number,
+        },
+        amount: 10,
+        type: 'Deposit',
+      });
 
     expect(response.status).toEqual(201);
     expect(response.body.txid).not.toBeNull();
@@ -90,14 +87,14 @@ describe('Transaction integration tests', () => {
 
   it(`should succeed to create a withdraw transaction`, async () => {
     const response = await request(app.getHttpServer())
-    .post('/transaction')
-    .send({
-      "account": {
-        "number": acc.number
-      },
-      "amount": 5,
-      "type": "Withdraw"
-    });
+      .post('/transaction')
+      .send({
+        account: {
+          number: acc.number,
+        },
+        amount: 5,
+        type: 'Withdraw',
+      });
 
     expect(response.status).toEqual(201);
     expect(response.body.txid).not.toBeNull();
@@ -105,80 +102,80 @@ describe('Transaction integration tests', () => {
 
   it(`should error because balance is not enough to withdraw`, async () => {
     const response = await request(app.getHttpServer())
-    .post('/transaction')
-    .send({
-      "account": {
-        "number": acc.number
-      },
-      "amount": 1000,
-      "type": "Withdraw"
-    });
+      .post('/transaction')
+      .send({
+        account: {
+          number: acc.number,
+        },
+        amount: 1000,
+        type: 'Withdraw',
+      });
 
     expect(response.status).toEqual(400);
-    expect(response.body.message).toEqual("Account balance is not enough");
+    expect(response.body.message).toEqual('Account balance is not enough');
   });
 
   it(`should error because account is not found`, async () => {
     const response = await request(app.getHttpServer())
-    .post('/transaction')
-    .send({
-      "account": {
-        "number": 12222222
-      },
-      "amount": 1000,
-      "type": "Withdraw"
-    });
+      .post('/transaction')
+      .send({
+        account: {
+          number: 12222222,
+        },
+        amount: 1000,
+        type: 'Withdraw',
+      });
 
     expect(response.status).toEqual(404);
-    expect(response.body.message).toEqual("Account not found");
+    expect(response.body.message).toEqual('Account not found');
   });
 
   it(`should error because schema validation failed`, async () => {
     let response = await request(app.getHttpServer())
-    .post('/transaction')
-    .send({
-      "account": {},
-      "amount": 1000,
-      "type": "Withdraw"
-    });
+      .post('/transaction')
+      .send({
+        account: {},
+        amount: 1000,
+        type: 'Withdraw',
+      });
 
     expect(response.status).toEqual(400);
-    expect(response.body.message).toEqual("Validation failed");
-    expect(response.body.error).toEqual("Bad Request");
+    expect(response.body.message).toEqual('Validation failed');
+    expect(response.body.error).toEqual('Bad Request');
 
     response = await request(app.getHttpServer())
-    .post('/transaction')
-    .send({
-      "account": {
-        "number": acc.number
-      },
-      "type": "Withdraw"
-    });
+      .post('/transaction')
+      .send({
+        account: {
+          number: acc.number,
+        },
+        type: 'Withdraw',
+      });
 
     expect(response.status).toEqual(400);
-    expect(response.body.message).toEqual("Validation failed");
-    expect(response.body.error).toEqual("Bad Request");
+    expect(response.body.message).toEqual('Validation failed');
+    expect(response.body.error).toEqual('Bad Request');
 
     response = await request(app.getHttpServer())
-    .post('/transaction')
-    .send({
-      "account": {
-        "number": acc.number
-      },
-      "amount": 1000
-    });
+      .post('/transaction')
+      .send({
+        account: {
+          number: acc.number,
+        },
+        amount: 1000,
+      });
 
     expect(response.status).toEqual(400);
-    expect(response.body.message).toEqual("Validation failed");
-    expect(response.body.error).toEqual("Bad Request");
+    expect(response.body.message).toEqual('Validation failed');
+    expect(response.body.error).toEqual('Bad Request');
   });
 
   it(`should error because transaction is not found`, async () => {
     const response = await request(app.getHttpServer())
-    .get(`/transaction/-1000`)
-    .query({accountId: acc.id})
+      .get(`/transaction/-1000`)
+      .query({ accountId: acc.id });
 
     expect(response.status).toEqual(404);
-    expect(response.body.message).toEqual("Transaction not found");
+    expect(response.body.message).toEqual('Transaction not found');
   });
 });
