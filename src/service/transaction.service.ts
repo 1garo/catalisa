@@ -67,9 +67,7 @@ export class TransactionService {
     if (body.type === TransactionType.Withdraw) {
       if (account.balance < amountInCents) {
         throw new HttpException(
-          `Account balance (${
-            account.balance / 100
-          }) is lower than wanted amount (${body.amount})`,
+          'Account balance is not enough',
           HttpStatus.BAD_REQUEST,
         );
       }
